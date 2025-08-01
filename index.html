@@ -10,12 +10,16 @@
       padding: 20px;
       color: #333;
     }
+    .form-container {
+      max-width: 40%;
+      min-width: 300px;
+    }
     label {
       display: block;
       margin: 10px 0 5px;
     }
     input {
-      width: 40%;
+      width: 100%;
       padding: 8px;
       font-size: 14px;
     }
@@ -46,6 +50,7 @@
       display: none;
     }
     .email-wrapper {
+      display: flex;
       align-items: center;
       gap: 5px;
     }
@@ -53,27 +58,29 @@
 </head>
 <body>
 
-  <h2>Gerador de Assinatura de E-mail — Sixtini</h2>
+  <div class="form-container">
+    <h2>Gerador de Assinatura de E-mail — Sixtini</h2>
 
-  <label for="nome">Nome</label>
-  <input type="text" id="nome" placeholder="Seu nome" oninput="limitarNome(this)">
+    <label for="nome">Nome</label>
+    <input type="text" id="nome" placeholder="Seu nome">
 
-  <label for="sobrenome">Sobrenome</label>
-  <input type="text" id="sobrenome" placeholder="Seu último sobrenome" onkeydown="bloquearEspaco(event)">
+    <label for="sobrenome">Sobrenome</label>
+    <input type="text" id="sobrenome" placeholder="Seu último sobrenome" onkeydown="bloquearEspaco(event)">
 
-  <label for="cargo">Cargo</label>
-  <input type="text" id="cargo" placeholder="Seu cargo">
+    <label for="cargo">Cargo</label>
+    <input type="text" id="cargo" placeholder="Seu cargo">
 
-  <label for="email">E-mail</label>
-  <div class="email-wrapper">
-    <input type="text" id="email" placeholder="seunome" style="flex: 1;" onkeydown="bloquearArroba(event)">
-    <span>@sixtini.com.br</span>
+    <label for="email">E-mail</label>
+    <div class="email-wrapper">
+      <input type="text" id="email" placeholder="seunome" style="flex: 1;" onkeydown="bloquearArroba(event)">
+      <span>@sixtini.com.br</span>
+    </div>
+
+    <label for="celular">Celular (somente números com DDD)</label>
+    <input type="text" id="celular" placeholder="00000000000" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+
+    <button onclick="gerarAssinatura()">Gerar Assinatura</button>
   </div>
-
-  <label for="celular">Celular (somente números com DDD)</label>
-  <input type="text" id="celular" placeholder="00000000000" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-
-  <button onclick="gerarAssinatura()">Gerar Assinatura</button>
 
   <div id="assinatura-container"></div>
 
@@ -99,11 +106,6 @@
         .split(' ')
         .map(p => p.charAt(0).toUpperCase() + p.slice(1))
         .join(' ');
-    }
-
-    function limitarNome(input) {
-      let partes = input.value.trim().split(' ').filter(Boolean);
-      input.value = partes.slice(0, 2).join(' ');
     }
 
     function bloquearEspaco(e) {
