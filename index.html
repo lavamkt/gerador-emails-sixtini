@@ -11,8 +11,13 @@
       color: #333;
     }
     .form-container {
-      max-width: 40%;
       min-width: 300px;
+    }
+    .form-35 {
+      max-width: 35vw;
+    }
+    .form-25 {
+      max-width: 25vw;
     }
     label {
       display: block;
@@ -61,25 +66,37 @@
   <div class="form-container">
     <h2>Gerador de Assinatura de E-mail — Sixtini</h2>
 
-    <label for="nome">Nome</label>
-    <input type="text" id="nome" placeholder="Seu nome">
-
-    <label for="sobrenome">Sobrenome</label>
-    <input type="text" id="sobrenome" placeholder="Seu último sobrenome" onkeydown="bloquearEspaco(event)">
-
-    <label for="cargo">Cargo</label>
-    <input type="text" id="cargo" placeholder="Seu cargo">
-
-    <label for="email">E-mail</label>
-    <div class="email-wrapper">
-      <input type="text" id="email" placeholder="seunome" style="flex: 1;" onkeydown="bloquearArroba(event)">
-      <span>@sixtini.com.br</span>
+    <div class="form-35">
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" placeholder="Seu nome">
     </div>
 
-    <label for="celular">Celular (somente números com DDD)</label>
-    <input type="text" id="celular" placeholder="00000000000" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+    <div class="form-35">
+      <label for="sobrenome">Sobrenome</label>
+      <input type="text" id="sobrenome" placeholder="Seu último sobrenome" onkeydown="bloquearEspaco(event)">
+    </div>
 
-    <button onclick="gerarAssinatura()">Gerar Assinatura</button>
+    <div class="form-35">
+      <label for="cargo">Cargo</label>
+      <input type="text" id="cargo" placeholder="Seu cargo">
+    </div>
+
+    <div class="form-25">
+      <label for="email">E-mail</label>
+      <div class="email-wrapper">
+        <input type="text" id="email" placeholder="seunome" onkeydown="bloquearArroba(event)">
+        <span>@sixtini.com.br</span>
+      </div>
+    </div>
+
+    <div class="form-35">
+      <label for="celular">Celular (somente números com DDD)</label>
+      <input type="text" id="celular" placeholder="00000000000" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+    </div>
+
+    <div class="form-35">
+      <button onclick="gerarAssinatura()">Gerar Assinatura</button>
+    </div>
   </div>
 
   <div id="assinatura-container"></div>
