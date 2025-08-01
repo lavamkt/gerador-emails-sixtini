@@ -67,7 +67,7 @@
 
   <label for="email">E-mail</label>
   <div class="email-wrapper">
-    <input type="text" id="email" placeholder="seunome" style="flex: 1;">
+    <input type="text" id="email" placeholder="seunome" style="flex: 1;" onkeydown="bloquearArroba(event)">
     <span>@sixtini.com.br</span>
   </div>
 
@@ -111,14 +111,18 @@
       if (e.key === ' ') e.preventDefault();
     }
 
+    function bloquearArroba(e) {
+      if (e.key === '@') e.preventDefault();
+    }
+
     function gerarAssinatura() {
       const nomeInput = document.getElementById('nome').value.trim();
       const sobrenomeInput = document.getElementById('sobrenome').value.trim();
-      const cargo = document.getElementById('cargo').value.trim();
+      const cargoInput = document.getElementById('cargo').value.trim();
       const emailUser = document.getElementById('email').value.trim().toLowerCase();
       const celular = document.getElementById('celular').value.trim();
 
-      if (!nomeInput || !sobrenomeInput || !cargo || !emailUser || !celular) {
+      if (!nomeInput || !sobrenomeInput || !cargoInput || !emailUser || !celular) {
         alert("Por favor, preencha todos os campos.");
         return;
       }
@@ -130,6 +134,7 @@
 
       const nome = capitalizar(nomeInput);
       const sobrenome = capitalizar(sobrenomeInput);
+      const cargo = capitalizar(cargoInput);
       const email = `${emailUser}@sixtini.com.br`;
       const celularFormatado = formatarCelular(celular);
       const telefoneFixo = "19 3408.4830";
@@ -156,7 +161,6 @@
     </td>
   </tr>
 </table>`;
-
       document.getElementById('assinatura-container').innerHTML = assinaturaHTML;
       document.getElementById('assinatura-container').style.display = 'block';
       document.getElementById('copiar-btn').style.display = 'inline-block';
