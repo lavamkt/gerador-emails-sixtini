@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Assinatura Sixtini</title>
+  <style>
+    body {
+      font-family: Verdana, Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #22304E;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #assinatura-container {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+    }
+    .tutorial {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+      background: #fff;
+      padding: 10px;
+      border-left: 4px solid #22304E;
+    }
+    #copiar-btn, .tutorial, #assinatura-container {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Gerador de Assinatura de E-mail — Sixtini</h2>
+
+  <label for="nome">Nome</label>
+  <input type="text" id="nome" placeholder="Seu nome">
+
+  <label for="sobrenome">Sobrenome</label>
+  <input type="text" id="sobrenome" placeholder="Seu último sobrenome">
+
+  <label for="cargo">Cargo</label>
+  <input type="text" id="cargo" placeholder="Seu cargo">
+
+  <label for="email">E-mail</label>
+  <input type="text" id="email" placeholder="seunome@sixtini.com.br">
+
+  <label for="celular">Celular (somente números com DDD)</label>
+  <input type="text" id="celular" placeholder="00000000000" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+
+  <button onclick="gerarAssinatura()">Gerar Assinatura</button>
+
+  <div id="assinatura-container"></div>
+
+  <button id="copiar-btn" onclick="copiarAssinatura()">Copiar</button>
+
+  <div class="tutorial">
+    <strong>Como usar no Outlook:</strong><br>
+    Vá no menu <strong>Inserir</strong> &gt; <strong>Assinatura</strong> &gt; <strong>Assinaturas...</strong><br>
+    Crie um novo nome para a assinatura e <strong>cole o conteúdo gerado</strong> no campo de texto. Salve e pronto!
+  </div>
+
+  <script>
+    function formatarCelular(num) {
+      if (num.length === 11) {
+        return `${num[0]}${num[1]} ${num[2]} ${num.slice(3, 7)}.${num.slice(7)}`;
+      }
+      return num;
+    }
+
+    function gerarAssinatura() {
+      const nome = document.getElementById('nome').value.trim();
+      const sobrenome = document.getElementById('sobrenome').value.trim();
+      const cargo = document.getElementById('cargo').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const celular = document.getElementById('celular').value.trim();
+
+      if (!nome || !sobrenome || !cargo || !email || !celular) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+      }
+
+      if (celular.length !== 11) {
+        alert("O número de celular deve conter exatamente 11 dígitos.");
+        return;
+      }
+
+      const celularFormatado = formatarCelular(celular);
+      const telefoneFixo = "19 3408.4830";
+
+      const assinaturaHTML = `
+<table border="0" cellpadding="0" cellspacing="0" style="width: 650px; height: 142px; font-family: Verdana, Arial, sans-serif; border-collapse: collapse; background-color: white;">
+  <tr>
+    <td style="padding: 12px 25px; vertical-align: middle;">
+      <p style="margin: 0 0 3px 0; font-size: 20px; font-weight: bold; color: #22304E;">
+        ${nome} ${sobrenome}
+      </p>
+      <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: bold; color: #292929;">
+        ${cargo}
+      </p>
+      <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: bold; color: #292929;">
+        ${email}&nbsp;
+      </p>
+      <div style="font-size: 13px; font-weight: bold; color: #292929;">
+        <span style="vertical-align: middle;">${celularFormatado} | ${telefoneFixo}</span>
+      </div>
+    </td>
+    <td style="width: 218px; text-align: right; vertical-align: middle; padding-right: 25px;">
+      <img src="/imgs/logo-sixtini.png" alt="Logo Sixtini" width="280" style="display: block; border: 0;">
+    </td>
+  </tr>
+</table>
+      `;
+
+      document.getElementById('assinatura-container').innerHTML = assinaturaHTML;
+      document.getElementById('assinatura-container').style.display = 'block';
+      document.getElementById('copiar-btn').style.display = 'inline-block';
+      document.querySelector('.tutorial').style.display = 'block';
+    }
+
+    function copiarAssinatura() {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = document.getElementById('assinatura-container').innerHTML;
+      document.body.appendChild(tempDiv);
+
+      const range = document.createRange();
+      range.selectNode(tempDiv);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+
+      try {
+        document.execCommand('copy');
+        alert('Assinatura copiada com sucesso!');
+      } catch (err) {
+        alert('Erro ao copiar. Tente manualmente.');
+      }
+
+      window.getSelection().removeAllRanges();
+      document.body.removeChild(tempDiv);
+    }
+  </script>
+
+</body>
+</html>
