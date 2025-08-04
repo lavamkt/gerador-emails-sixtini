@@ -10,19 +10,23 @@
       padding: 20px;
       color: #333;
     }
+    .form-container {
+      min-width: 300px;
+    }
+    .form-35 {
+      max-width: 35vw;
+    }
+    .form-25 {
+      max-width: 35vw;
+    }
     label {
       display: block;
       margin: 10px 0 5px;
     }
     input {
+      width: 100%;
       padding: 8px;
       font-size: 14px;
-    }
-    #nome, #sobrenome, #cargo, #celular {
-      width: 35%;
-    }
-    #email {
-      width: 25%;
     }
     button {
       margin-top: 15px;
@@ -50,29 +54,50 @@
     #copiar-btn, .tutorial, #assinatura-container {
       display: none;
     }
+    .email-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
   </style>
 </head>
 <body>
 
-  <h2>Gerador de Assinatura de E-mail — Sixtini</h2>
+  <div class="form-container">
+    <h2>Gerador de Assinatura de E-mail</h2>
 
-  <label for="nome">Nome</label>
-  <input type="text" id="nome" placeholder="Seu nome">
+    <div class="form-35">
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" placeholder="Seu nome">
+    </div>
 
-  <label for="sobrenome">Sobrenome</label>
-  <input type="text" id="sobrenome" placeholder="Seu último sobrenome">
+    <div class="form-35">
+      <label for="sobrenome">Sobrenome</label>
+      <input type="text" id="sobrenome" placeholder="Seu último sobrenome" onkeydown="bloquearEspaco(event)">
+    </div>
 
-  <label for="cargo">Cargo</label>
-  <input type="text" id="cargo" placeholder="Seu cargo">
+    <div class="form-35">
+      <label for="cargo">Cargo</label>
+      <input type="text" id="cargo" placeholder="Seu cargo">
+    </div>
 
-  <label for="email">E-mail</label>
-  <input type="text" id="email" placeholder="seunome" oninput="this.value = this.value.replace(/[@\s]/g, '')">
-  <span>@sixtini.com.br</span>
+    <div class="form-25">
+      <label for="email">E-mail (Sem o Arroba @)</label>
+      <div class="email-wrapper">
+        <input type="text" id="email" placeholder="seunome" onkeydown="bloquearArroba(event)">
+        <span>@sixtini.com.br</span>
+      </div>
+    </div>
 
-  <label for="celular">Celular (somente números com DDD)</label>
-  <input type="text" id="celular" placeholder="00000000000" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+    <div class="form-35">
+      <label for="celular">Celular (somente números com DDD)</label>
+      <input type="text" id="celular" placeholder="00000000000" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+    </div>
 
-  <button onclick="gerarAssinatura()">Gerar Assinatura</button>
+    <div class="form-35">
+      <button onclick="gerarAssinatura()">Gerar Assinatura</button>
+    </div>
+  </div>
 
   <div id="assinatura-container"></div>
 
@@ -80,7 +105,7 @@
 
   <div class="tutorial">
     <strong>Como usar no Outlook:</strong><br>
-    Vá no menu <strong>Inserir</strong> &gt; <strong>Assinatura</strong> &gt; <strong>Assinaturas...</strong><br>
+    Clique em <strong>copiar</strong>, depois abra um novo e-mail no outlook<br>vá no menu superior <strong>Inserir</strong> &gt; <strong>Assinatura</strong> &gt; <strong>Assinaturas...</strong><br>
     Crie um novo nome para a assinatura e <strong>cole o conteúdo gerado</strong> no campo de texto. Salve e pronto!
   </div>
 
@@ -92,23 +117,30 @@
       return num;
     }
 
-    function capitalizarTexto(texto) {
-      return texto
+    function capitalizar(str) {
+      return str
         .toLowerCase()
         .split(' ')
-        .filter(Boolean)
-        .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
+        .map(p => p.charAt(0).toUpperCase() + p.slice(1))
         .join(' ');
     }
 
+    function bloquearEspaco(e) {
+      if (e.key === ' ') e.preventDefault();
+    }
+
+    function bloquearArroba(e) {
+      if (e.key === '@') e.preventDefault();
+    }
+
     function gerarAssinatura() {
-      const nome = capitalizarTexto(document.getElementById('nome').value.trim());
-      const sobrenome = capitalizarTexto(document.getElementById('sobrenome').value.trim());
-      const cargo = capitalizarTexto(document.getElementById('cargo').value.trim());
-      const emailRaw = document.getElementById('email').value.trim().toLowerCase();
+      const nomeInput = document.getElementById('nome').value.trim();
+      const sobrenomeInput = document.getElementById('sobrenome').value.trim();
+      const cargoInput = document.getElementById('cargo').value.trim();
+      const emailUser = document.getElementById('email').value.trim().toLowerCase();
       const celular = document.getElementById('celular').value.trim();
 
-      if (!nome || !sobrenome || !cargo || !emailRaw || !celular) {
+      if (!nomeInput || !sobrenomeInput || !cargoInput || !emailUser || !celular) {
         alert("Por favor, preencha todos os campos.");
         return;
       }
@@ -118,36 +150,35 @@
         return;
       }
 
+      const nome = capitalizar(nomeInput);
+      const sobrenome = capitalizar(sobrenomeInput);
+      const cargo = capitalizar(cargoInput);
+      const email = `${emailUser}@sixtini.com.br`;
       const celularFormatado = formatarCelular(celular);
       const telefoneFixo = "19 3408.4830";
-      const emailCompleto = `${emailRaw}@sixtini.com.br`;
 
       const assinaturaHTML = `
-<div style="background-color: white; padding: 16px;">
-  <table border="0" cellpadding="0" cellspacing="0" style="width: 650px; height: 142px; font-family: Verdana, Arial, sans-serif; border-collapse: collapse; background-color: white;">
-    <tr>
-      <td style="padding: 12px 25px; vertical-align: middle;">
-        <p style="margin: 0 0 3px 0; font-size: 20px; font-weight: bold; color: #22304E;">
-          ${nome} ${sobrenome}
-        </p>
-        <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: bold; color: #292929;">
-          ${cargo}
-        </p>
-        <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: bold; color: #292929;">
-          ${emailCompleto}
-        </p>
-        <div style="font-size: 13px; font-weight: bold; color: #292929;">
-          <span style="vertical-align: middle;">${celularFormatado} | ${telefoneFixo}</span>
-        </div>
-      </td>
-      <td style="width: 218px; text-align: right; vertical-align: middle; padding-right: 25px;">
-        <img src="/gerador-emails-sixtini/imgs/logo-sixtini.png" alt="Logo Sixtini" width="280" style="display: block; border: 0;">
-      </td>
-    </tr>
-  </table>
-</div>
-      `;
-
+<table border="0" cellpadding="0" cellspacing="0" style="width: 650px; height: 142px; font-family: Verdana, Arial, sans-serif; border-collapse: collapse; background-color: white;">
+  <tr>
+    <td style="padding: 12px 25px; vertical-align: middle;">
+      <p style="margin: 0 0 3px 0; font-size: 20px; font-weight: bold; color: #22304E;">
+        ${nome} ${sobrenome}
+      </p>
+      <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: bold; color: #292929;">
+        ${cargo}
+      </p>
+      <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: bold; color: #292929;">
+        ${email}
+      </p>
+      <div style="font-size: 13px; font-weight: bold; color: #292929;">
+        <span style="vertical-align: middle;">${celularFormatado} | ${telefoneFixo}</span>
+      </div>
+    </td>
+    <td style="width: 218px; text-align: right; vertical-align: middle; padding-right: 25px;">
+      <img src="/gerador-emails-sixtini/imgs/logo-sixtini.png" alt="Logo Sixtini" width="280" style="display: block; border: 0;">
+    </td>
+  </tr>
+</table>`;
       document.getElementById('assinatura-container').innerHTML = assinaturaHTML;
       document.getElementById('assinatura-container').style.display = 'block';
       document.getElementById('copiar-btn').style.display = 'inline-block';
